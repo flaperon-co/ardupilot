@@ -126,7 +126,7 @@
     <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
     <qos>
       <reliability>
-        <kind>BEST_EFFORT</kind>
+        <kind>RELIABLE</kind>
       </reliability>
       <durability>
         <kind>VOLATILE</kind>
@@ -154,7 +154,7 @@
     <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
     <qos>
       <reliability>
-        <kind>BEST_EFFORT</kind>
+        <kind>RELIABLE</kind>
       </reliability>
       <durability>
         <kind>VOLATILE</kind>
