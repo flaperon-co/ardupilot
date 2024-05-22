@@ -30,12 +30,12 @@
 
 // Enable DDS at runtime by default
 static constexpr uint8_t ENABLED_BY_DEFAULT = 1;
-static constexpr uint16_t DELAY_TIME_TOPIC_MS = 10;
+static constexpr uint16_t DELAY_TIME_TOPIC_MS = 5;
 static constexpr uint16_t DELAY_BATTERY_STATE_TOPIC_MS = 1000;
-static constexpr uint16_t DELAY_LOCAL_POSE_TOPIC_MS = 10;
-static constexpr uint16_t DELAY_LOCAL_VELOCITY_TOPIC_MS = 10;
+static constexpr uint16_t DELAY_LOCAL_POSE_TOPIC_MS = 5;
+static constexpr uint16_t DELAY_LOCAL_VELOCITY_TOPIC_MS = 5;
 static constexpr uint16_t DELAY_GEO_POSE_TOPIC_MS = 33;
-static constexpr uint16_t DELAY_CLOCK_TOPIC_MS = 10;
+static constexpr uint16_t DELAY_CLOCK_TOPIC_MS = 5;
 static constexpr uint16_t DELAY_PING_MS = 500;
 
 // Define the subscriber data members, which are static class scope.
