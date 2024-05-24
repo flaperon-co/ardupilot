@@ -1,2 +1,2 @@
 #NAME=latitude,longitude,absolute-altitude,heading
-TARTU=58.217461,26.657529,72,0
+TARTU=58.2142612,26.6455033,72,0
