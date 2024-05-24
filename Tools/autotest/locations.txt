@@ -1,2 +1,2 @@
 #NAME=latitude,longitude,absolute-altitude,heading
-CMAC=58.217,26.654,96,353
+TARTU=58.217,26.654,96,353
