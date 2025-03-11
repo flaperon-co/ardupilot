@@ -40,7 +40,7 @@ set(WAF_ENABLE_NETWORKING_TESTS $<$<BOOL:${ARDUPILOT_ENABLE_NETWORKING_TESTS}>:"
 set(WAF_ENABLE_PPP $<$<BOOL:${ARDUPILOT_ENABLE_PPP}>:"--enable-PPP">)
 
 add_custom_target(ardupilot_configure ALL
-  ${WAF_COMMAND} configure --board sitl
+  ${WAF_COMMAND} configure --board sitl --configure-define=HAL_WITH_POSTYPE_DOUBLE=1 
     ${WAF_CONFIG}
     ${WAF_DISABLE_NETWORKING}
     ${WAF_DISABLE_SCRIPTING}
