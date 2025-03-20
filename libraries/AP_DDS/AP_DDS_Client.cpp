@@ -809,6 +809,9 @@ void AP_DDS_Client::on_request(uxrSession* uxr_session, uxrObjectId object_id, u
  */
 void AP_DDS_Client::main_loop(void)
 {
+    // Work around to stop DDS & mavlink conflict & gps hotfix issue
+    hal.scheduler->delay(5000);
+    
     if (!init_transport()) {
         return;
     }
