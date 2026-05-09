@@ -678,18 +678,39 @@ bool Plane::verify_nav_wp(const AP_Mission::Mission_Command& cmd)
         acceptance_distance_m = nav_controller->turn_distance(get_wp_radius(), auto_state.next_turn_angle);
     }
     const float wp_dist = current_loc.get_distance(flex_next_WP_loc);
-    if (wp_dist <= acceptance_distance_m) {
-        gcs().send_text(MAV_SEVERITY_INFO, "Reached waypoint #%i dist %um",
-                          (unsigned)mission.get_current_nav_cmd().index,
-                          (unsigned)current_loc.get_distance(flex_next_WP_loc));
-        return true;
-	}
+    const bool wp_reached = (wp_dist <= acceptance_distance_m);
+    const bool wp_passed = current_loc.past_interval_finish_line(prev_WP_loc, flex_next_WP_loc);
 
-    // have we flown past the waypoint?
-    if (current_loc.past_interval_finish_line(prev_WP_loc, flex_next_WP_loc)) {
-        gcs().send_text(MAV_SEVERITY_INFO, "Passed waypoint #%i dist %um",
-                          (unsigned)mission.get_current_nav_cmd().index,
-                          (unsigned)current_loc.get_distance(flex_next_WP_loc));
+    if (wp_reached || wp_passed) {
+        // Mission state advances on either the acceptance-radius hit
+        // (wp_reached) or the perpendicular-line crossing (wp_passed).
+        // Both checks consume current_loc, which is the EKF horizontal
+        // position estimate. If the EKF is dead-reckoning, GPS is
+        // glitching, or absolute horizontal position is otherwise not
+        // valid, the estimate may be far from the airframe's true
+        // location and the sequencing can advance through waypoints
+        // the vehicle never actually reached. Refuse to sequence past
+        // the waypoint in that state.
+        nav_filter_status filt;
+        const bool got_status = ahrs.get_filter_status(filt);
+        const bool degraded = got_status && (filt.flags.dead_reckoning ||
+                                             filt.flags.gps_glitching ||
+                                             !filt.flags.horiz_pos_abs);
+        if (degraded) {
+            gcs().send_text(MAV_SEVERITY_WARNING,
+                            "WP %u %s gated: EKF degraded (dr=%u gl=%u abs=%u)",
+                            (unsigned)mission.get_current_nav_cmd().index,
+                            wp_reached ? "reach" : "pass",
+                            (unsigned)filt.flags.dead_reckoning,
+                            (unsigned)filt.flags.gps_glitching,
+                            (unsigned)filt.flags.horiz_pos_abs);
+            return false;
+        }
+        gcs().send_text(MAV_SEVERITY_INFO,
+                        wp_reached ? "Reached waypoint #%i dist %um"
+                                   : "Passed waypoint #%i dist %um",
+                        (unsigned)mission.get_current_nav_cmd().index,
+                        (unsigned)wp_dist);
         return true;
     }
 
